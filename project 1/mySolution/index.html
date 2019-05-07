@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>🎮 Vuejs Project 1</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <section class="players">
+            <div class="player">
+                <h2>{{ playerName }}</h2>
+                <div class="score-container">
+                    <div class="score" :style="{width: playerScore + '%'}">{{ playerScore }}</div>
+                </div>
+            </div>
+            <div class="player">
+                <h2>{{ opponentName }}</h2>
+                <div class="score-container">
+                    <div class="score" :style="{width: opponentScore + '%'}">{{ opponentScore }}</div>
+                </div>
+            </div>
+        </section>
+        <section class="buttons">
+            <template v-if="gameInProgress">
+                <button class="attack" @click="attack">{{ buttonTextAttack }}</button>
+                <button class="special-attack" @click="specialAttack">{{ buttonTextSpecialAttack }}</button>
+                <button class="heal" @click="heal">{{ buttonTextHeal }}</button>
+                <button class="give-up" @click="giveUp">{{ buttonTextGiveUp }}</button>
+            </template>
+            <template v-else>
+                <button @click="startGame">{{ buttonTextStart }}</button>
+            </template>
+        </section>
+        <section class="damage-log" v-if="damageLog.length > 0">
+            <ul class="log">
+                <template v-for="entry in reversedLog">
+                    <li v-if="entry.damage > 0" class="log damage" :class="entry.attackingPlayer === playerName ? 'player' : 'opponent'">{{ entry.attackingPlayer }} attacked! {{ entry.attackedPlayer }} suffered {{ entry.damage }} damage.</li>
+                    <li v-else-if="entry.damage === 0" class="log no-effect">{{ entry.attackingPlayer }} came up short! No effect on damage.</li>
+                    <li v-else class="log heal" :class="entry.attackingPlayer === playerName ? 'player' : 'opponent'">{{ entry.attackingPlayer }} self-healed {{ entry.damage * -1 }} points!</li>
+                </template>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                playerName: 'You',
+                opponentName: 'Monster',
+                playerScore: 100,
+                opponentScore: 100,
+                gameInProgress: false,
+                buttonTextAttack: 'ATTACK',
+                buttonTextSpecialAttack: 'SPECIAL ATTACK',
+                buttonTextHeal: 'HEAL',
+                buttonTextGiveUp: 'GIVE UP',
+                buttonTextStart: 'START A NEW GAME',
+                damageLog: []
+            },
+            computed: {
+                reversedLog: function() {
+                    const reversedLog = [...this.damageLog];
+                    reversedLog.reverse();
+                    return reversedLog;
+                }
+            },
+            methods: {
+                startGame: function() {
+                    this.playerScore = 100;
+                    this.opponentScore = 100;
+                    this.gameInProgress = true;
+                    this.damageLog = [];
+                },
+                attack: function() {
+                    this.playerAttack(this.generateAttackScore());
+                    this.opponentAttack(this.generateAttackScore());
+                },
+                specialAttack: function() {
+                    this.playerAttack(this.generateAttackScore(true));
+                    // Opponent gets two attacks, since player got a special attack.
+                    this.opponentAttack(this.generateAttackScore());
+                    this.opponentAttack(this.generateAttackScore());
+                },
+                heal: function() {
+                    this.playerHeal(this.generateAttackScore() * 2);
+                    this.opponentAttack(this.generateAttackScore());
+                },
+                giveUp: function() {
+                    this.gameInProgress = false;
+                },
+                playerAttack: function(score) {
+                    this.opponentScore -= score;
+                    this.updateDamageLog(this.playerName, this.opponentName, score);
+                },
+                opponentAttack: function(score) {
+                    this.playerScore -= score;
+                    this.updateDamageLog(this.opponentName, this.playerName, score);
+                },
+                playerHeal: function(score) {
+                    this.playerScore += score;
+                    if (this.playerScore > 100) {
+                        const diff = this.playerScore - 100;
+                        this.playerScore = 100;
+                        score -= diff;
+                    }
+                    this.updateDamageLog(this.playerName, this.opponentName, score * -1);
+                },
+                generateAttackScore: function(special = false) {
+                    const multiplier = special ? 20 : 5;
+                    const score = Math.floor(Math.random() * multiplier);
+                    return score;
+                },
+                updateDamageLog: function(attacker, attacked, score) {
+                    this.damageLog.push({
+                        attackingPlayer: attacker,
+                        attackedPlayer: attacked,
+                        damage: score
+                    });
+                }
+            },
+            watch: {
+                playerScore: function() {
+                    if (this.playerScore <= 0) {
+                        const msg = '😢 You lost! Start a new game?';
+                        if (confirm(msg)) {
+                            this.startGame();
+                        } else {
+                            this.giveUp();
+                        }
+                    }
+                },
+                opponentScore: function() {
+                    if (this.opponentScore <= 0) {
+                        const msg = '🎉 You won! Start a new game?';
+                        if (confirm(msg)) {
+                            this.startGame();
+                        } else {
+                            this.giveUp();
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        #app {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+            font-family: sans-serif;
+        }
+
+        section {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex: 1 1 auto;
+            margin: 20px;
+        }
+
+        section.buttons {
+            width: 50%;
+            margin: auto;
+        }
+
+        section.damage-log {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            padding: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #EEE;
+        }
+
+        button.attack {
+            background-color: #F07574;
+        }
+
+        button.special-attack {
+            background-color: #F2A438;
+        }
+
+        button.heal {
+            background-color: #BCFDBB;
+        }
+
+        .players .player {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin: 20px;
+        }
+
+        .score-container {
+            width: 100%;
+            border: 1px solid #666;
+            height: 40px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .score {
+            height: 100%;
+            padding: 10px;
+            background-color: green;
+            color: #eee;
+            min-width: 10%;
+            transition: width 500ms;
+        }
+
+        ul.log {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        li.log {
+            width: 100%;
+            text-align: center;
+            padding: 5px;
+            margin: 2px;
+            background-color: #EEE;
+        }
+
+        .log.player.damage {
+            background-color: rgb(241, 119, 119);
+        }
+
+        .log.player.heal {
+            background-color: rgb(129, 224, 129);
+        }
+
+        .log.opponent.damage {
+            background-color: #F2A438;
+        }
+
+        .log.opponent.heal {
+            background-color: rgb(151, 213, 255);
+        }
+    </style>
+</body>
+</html>

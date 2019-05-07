@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Exercise 1</title>
+</head>
+<body>
+        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+        <div id="exercise">
+           <!-- 1) Fill the <p> below with your Name and Age - using Interpolation -->
+            <p>VueJS is pretty cool - {{ name }} ({{ age }})</p>
+            <!-- 2) Output your age, multiplied by 3 -->
+            <p>{{ multiplyAge() }}</p>
+            <!-- 3) Call a function to output a random float between 0 and 1 (Math.random()) -->
+            <p>Random between 0 and 1: {{ generateRandom() }}</p>
+            <p>Random integer between 0 and 100: {{ generateRandomInt() }}</p>
+            <!-- 4) Search any image on Google and output it here by binding the "src" attribute -->
+            <div>
+                <img v-bind:src="imgSrc" style="width:700px;">
+            </div>
+            <!-- 5) Pre-Populate this input with your name (set the "value" attribute) -->
+            <div>
+                <label for="pre-populate-example">Pre-populated input:</label>
+                <input id="pre-populate-example" type="text" v-bind:value="name">
+            </div>
+        </div>
+
+        <script>
+            new Vue({
+                el: '#exercise',
+
+                data: {
+                    name: 'Ian',
+                    age: 28,
+                    imgSrc: 'https://imgs.xkcd.com/comics/mysteries.png'
+                },
+
+                methods: {
+                    multiplyAge: function() {
+                        return this.age * 3;
+                    },
+                    generateRandom: function () {
+                        return Math.random();
+                    },
+                    generateRandomInt: function () {
+                        return Math.round(randoFloat = Math.random() * 100);
+                    }
+                }
+            });
+        </script>
+</body>
+</html>

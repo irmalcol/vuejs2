@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VueJS</title>
+
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="demo" @click="attachRed = !attachRed" v-bind:class="divClasses"></div>
+        <div class="demo" :style="myStyles"></div>
+        <div class="demo" :style="[myStyles, {height: width + 'px'}]"></div>
+        <hr>
+        <input type="text" v-model="color">
+        <input type="number" v-model="width">
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                attachRed: false,
+                attachBlue: false,
+                color: 'grey',
+                width: 100
+            },
+            computed: {
+                divClasses: function() {
+                    return {red: this.attachRed, blue: !this.attachRed};
+                },
+                myStyles: function() {
+                    return {
+                        backgroundColor: this.color,
+                        width: this.width + 'px'
+                    };
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .demo {
+            display: inline-block;
+            margin: 20px;
+            width: 200px;
+            height: 200px;
+            background: grey;
+        }
+        .red {
+            background: red;
+        }
+        .green {
+            background: green;
+        }
+        .blue {
+            background: blue;
+        }
+    </style>
+</body>
+</html>
