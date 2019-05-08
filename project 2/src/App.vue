@@ -2,7 +2,9 @@
     <div class="container">
         <app-progress-bar></app-progress-bar>
         <app-input-box></app-input-box>
-        <app-quote v-for="(quote, index) in quoteList" :key="index">{{ quote.text }}</app-quote>
+        <div class="quote-container">
+            <app-quote v-for="(quote, index) in quoteList" :key="index">{{ quote.text }}</app-quote>
+        </div>
         <app-info></app-info>
     </div>
 </template>
@@ -36,4 +38,9 @@
 </script>
 
 <style>
+    .quote-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 10px;
+    }
 </style>

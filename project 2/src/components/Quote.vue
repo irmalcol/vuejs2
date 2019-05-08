@@ -13,5 +13,7 @@ export default {
 <style>
     .quote {
         border: 2px solid #DDD;
+        padding: 10px 20px;
+        text-align: center;
     }
 </style>
