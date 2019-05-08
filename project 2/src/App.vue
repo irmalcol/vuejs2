@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <app-progress-bar></app-progress-bar>
-        <app-input-box></app-input-box>
+        <app-input-box :addQuote="addQuote"></app-input-box>
         <div class="quote-container">
             <app-quote v-for="(quote, index) in quoteList" :key="index">{{ quote.text }}</app-quote>
         </div>
@@ -18,15 +18,14 @@
     export default {
         data() {
             return {
-                quoteList: [
-                    {
-                        text: 'Pithy phrase',
-                    },
-                    {
-                        text: 'Words of wisdom'
-                    }
-                ]
+                quoteList: []
             };
+        },
+        methods: {
+            addQuote(quoteText) {
+                console.log('From App.vue: ' + quoteText);
+                this.quoteList.push({ text: quoteText });
+            }
         },
         components: {
             appInfo: Info,
