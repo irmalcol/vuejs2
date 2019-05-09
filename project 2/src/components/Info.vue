@@ -1,6 +1,6 @@
 <template>
     <div class="info-block">
-        <p class="info">Info: Click on a quote to delete it.</p>
+        <p class="info rounded">Info: Click on a quote to delete it.</p>
     </div>
 </template>
 
@@ -16,7 +16,6 @@
         width: 100%;
         background-color: #D7EFF3;
         border: 2px solid #A3D8E0;
-        border-radius: 5px;
         text-align: center;
     }
 </style>

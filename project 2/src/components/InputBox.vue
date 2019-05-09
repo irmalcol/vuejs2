@@ -15,11 +15,9 @@ export default {
         processQuote() {
             const inputTextarea = document.querySelector('#quote-input');
             const text = inputTextarea.value;
-            // const text = document.querySelector('#quote-input').value;
             if ( typeof text != 'string' || text == '') {
                 return false;
             }
-            console.log('Input is a non-empty string');
             this.addQuote(text);
             inputTextarea.value = '';
         }
@@ -40,7 +38,6 @@ export default {
     textarea {
         width: 100%;
         min-height: 100px;
-        /* margin: 10px; */
     }
 
     label {
